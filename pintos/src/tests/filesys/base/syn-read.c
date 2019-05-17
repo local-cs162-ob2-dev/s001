@@ -18,5 +18,5 @@ void
 test_main (void)
 {
   int rand_num = rand() % 2;
-  msg("num=%d", rand_num);
+  msg("num=%d", 1);
 }
