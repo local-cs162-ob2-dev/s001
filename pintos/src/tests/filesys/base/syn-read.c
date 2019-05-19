@@ -8,7 +8,6 @@
 #include "tests/lib.h"
 #include "tests/main.h"
 #include "tests/filesys/base/syn-read.h"
-#include "<stdlib.h>"
 
 static char buf[BUF_SIZE];
 
@@ -17,6 +16,16 @@ static char buf[BUF_SIZE];
 void
 test_main (void)
 {
-  int rand_num = rand() % 2;
-  msg("num=%d", 1);
+  pid_t children[CHILD_CNT];
+  int fd;
+
+  CHECK (create (file_name, sizeof buf), "create \"%s\"", file_name);
+  CHECK ((fd = open (file_name)) > 1, "open \"%s\"", file_name);
+  random_bytes (buf, sizeof buf);
+  CHECK (write (fd, buf, sizeof buf) > 0, "write \"%s\"", file_name);
+  msg ("close \"%s\"", file_name);
+  close (fd);
+
+  exec_children ("child-syn-read", children, CHILD_CNT);
+  wait_children (children, CHILD_CNT);
 }
